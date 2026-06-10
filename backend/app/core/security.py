@@ -24,10 +24,14 @@ _fernet = Fernet(settings.pii_encryption_key.encode())
 # ── passwords ──────────────────────────────────────────────────────────────
 
 def hash_password(raw: str) -> str:
+    if len(raw.encode("utf-8")) > 72:
+        raw = raw[:72]
     return _pwd.hash(raw)
 
 
 def verify_password(raw: str, hashed: str) -> bool:
+    if len(raw.encode("utf-8")) > 72:
+        raw = raw[:72]
     return _pwd.verify(raw, hashed)
 
 
