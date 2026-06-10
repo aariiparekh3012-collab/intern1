@@ -24,6 +24,16 @@ class Settings(BaseSettings):
     # Database
     database_url: str = Field(..., alias="DATABASE_URL")
 
+    @property
+    def db_url(self) -> str:
+        """Normalize DB URL for psycopg2 driver."""
+        url = self.database_url
+        if url.startswith("postgresql+psycopg://"):
+            url = url.replace("postgresql+psycopg://", "postgresql+psycopg2://", 1)
+        elif url.startswith("postgresql://"):
+            url = url.replace("postgresql://", "postgresql+psycopg2://", 1)
+        return url
+
     # Security
     jwt_secret: str = Field(..., alias="JWT_SECRET")
     jwt_alg: str = "HS256"

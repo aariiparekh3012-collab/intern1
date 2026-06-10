@@ -15,7 +15,7 @@ from app.core.config import get_settings
 settings = get_settings()
 
 engine = create_engine(
-    settings.database_url,
+    settings.db_url,
     pool_pre_ping=True,      # drop dead connections (important behind PgBouncer)
     pool_size=10,
     max_overflow=20,
