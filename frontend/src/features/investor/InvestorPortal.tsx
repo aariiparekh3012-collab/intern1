@@ -47,47 +47,134 @@ export function InvestorPortal() {
     );
   }
 
-  // Not yet a client — show onboarding status
+  // Not yet an active client — investor self-service view (KYC / Risk / Documents / Agreement)
   if (!dash?.profile) {
+    const ob = dash?.onboarding ?? null;
+    const ORDER = [
+      "draft", "kyc_pending", "kyc_verified", "risk_profiled",
+      "agreement_pending", "agreement_signed", "under_review", "active",
+    ];
+    const idx = ob ? ORDER.indexOf(ob.status) : -1;
+    const reached = (s: string) => idx >= 0 && idx >= ORDER.indexOf(s);
+    const kycDone = reached("kyc_verified");
+    const riskDone = reached("risk_profiled");
+    const agreementSigned = reached("agreement_signed");
+    const rejected = ob?.status === "kyc_rejected" || ob?.status === "rejected";
+
+    const Pill = ({ done, label }: { done: boolean; label?: string }) => (
+      <span className={`badge ${done ? "badge--success" : ""}`}>
+        {label ?? (done ? "Completed" : "Pending")}
+      </span>
+    );
+
+    const docs = [
+      { name: "PAN Card", done: !!ob },
+      { name: "Aadhaar / Identity (KYC)", done: kycDone },
+      { name: "Bank Proof", done: kycDone },
+      { name: "Demat (CMR)", done: kycDone },
+      { name: "PMS Agreement", done: agreementSigned },
+    ];
+
     return (
-      <div style={{ maxWidth: 600, margin: "40px auto" }} className="fade-in">
-        <h1 style={{ marginBottom: 8 }}>Welcome, Investor</h1>
-        <p className="muted" style={{ marginBottom: 24 }}>
-          Your client account is being set up. Here is your onboarding status:
-        </p>
-        {dash?.onboarding ? (
+      <div className="fade-in" style={{ maxWidth: 760, margin: "0 auto" }}>
+        <div style={{ marginBottom: 20 }}>
+          <h1>My Onboarding</h1>
+          <p className="muted">Track your KYC, risk profile, documents and agreement status.</p>
+        </div>
+
+        {!ob ? (
           <Card>
-            <div style={{ display: "grid", gap: 12 }}>
-              <div className="row row--between">
-                <span className="faint">Name</span>
-                <strong>{dash.onboarding.full_name}</strong>
-              </div>
-              <div className="row row--between">
-                <span className="faint">PAN</span>
-                <span className="mono">{dash.onboarding.pan}</span>
-              </div>
-              <div className="row row--between">
-                <span className="faint">Proposed investment</span>
-                <span>
-                  {new Intl.NumberFormat("en-IN", {
-                    style: "currency",
-                    currency: "INR",
-                    maximumFractionDigits: 0,
-                  }).format(dash.onboarding.proposed_investment_inr)}
-                </span>
-              </div>
-              <div className="row row--between">
-                <span className="faint">Status</span>
-                <StatusBadge status={dash.onboarding.status} />
-              </div>
+            <div className="empty">
+              No onboarding application found for your account.<br />
+              Please <a href="/onboarding">start your onboarding</a> or contact your relationship manager.
             </div>
           </Card>
         ) : (
-          <Card>
-            <div className="empty">
-              No onboarding application found. Please contact your relationship manager to begin.
+          <>
+            <Card style={{ marginBottom: 16 }}>
+              <div className="row row--between">
+                <div>
+                  <strong>{ob.full_name}</strong>
+                  <div className="faint" style={{ fontSize: ".82rem" }}>
+                    Application {ob.id.slice(0, 8)}
+                  </div>
+                </div>
+                <StatusBadge status={ob.status} />
+              </div>
+            </Card>
+
+            <div className="grid" style={{ gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+              {/* My KYC */}
+              <Card>
+                <h3 className="card__title">My KYC</h3>
+                <div className="row row--between" style={{ marginBottom: 8 }}>
+                  <span className="faint">Status</span>
+                  <Pill done={kycDone} label={rejected ? "Rejected" : kycDone ? "Verified" : "In progress"} />
+                </div>
+                <div className="row row--between" style={{ marginBottom: 8 }}>
+                  <span className="faint">PAN</span><span className="mono">{ob.pan}</span>
+                </div>
+                <div className="row row--between">
+                  <span className="faint">Source</span>
+                  <span style={{ textTransform: "uppercase" }}>{ob.kyc_source ?? "—"}</span>
+                </div>
+              </Card>
+
+              {/* My Risk Profile */}
+              <Card>
+                <h3 className="card__title">My Risk Profile</h3>
+                <div className="row row--between" style={{ marginBottom: 8 }}>
+                  <span className="faint">Status</span>
+                  <Pill done={riskDone} />
+                </div>
+                <div className="row row--between">
+                  <span className="faint">Category</span>
+                  {ob.risk_category ? (
+                    <span className="badge badge--info" style={{ textTransform: "capitalize" }}>
+                      {ob.risk_category}
+                    </span>
+                  ) : (
+                    <span className="faint">Not assessed</span>
+                  )}
+                </div>
+              </Card>
+
+              {/* My Documents */}
+              <Card>
+                <h3 className="card__title">My Documents</h3>
+                <div style={{ display: "grid", gap: 8 }}>
+                  {docs.map((d) => (
+                    <div key={d.name} className="row row--between">
+                      <span>{d.name}</span>
+                      <Pill done={d.done} label={d.done ? "Received" : "Pending"} />
+                    </div>
+                  ))}
+                </div>
+              </Card>
+
+              {/* Agreement Status */}
+              <Card>
+                <h3 className="card__title">Agreement Status</h3>
+                <div className="row row--between" style={{ marginBottom: 8 }}>
+                  <span className="faint">PMS Agreement</span>
+                  <Pill done={agreementSigned} label={agreementSigned ? "Signed" : "Awaiting e-sign"} />
+                </div>
+                <div className="row row--between">
+                  <span className="faint">Proposed investment</span>
+                  <span>
+                    {new Intl.NumberFormat("en-IN", {
+                      style: "currency", currency: "INR", maximumFractionDigits: 0,
+                    }).format(ob.proposed_investment_inr)}
+                  </span>
+                </div>
+                {!agreementSigned && (
+                  <p className="faint" style={{ fontSize: ".78rem", marginTop: 10, marginBottom: 0 }}>
+                    Complete the agreement step in your onboarding to activate your PMS account.
+                  </p>
+                )}
+              </Card>
             </div>
-          </Card>
+          </>
         )}
       </div>
     );

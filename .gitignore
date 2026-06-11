@@ -26,6 +26,9 @@ frontend/.vite/
 *.swo
 *~
 
+# Test caches
+.pytest_cache/
+
 # OS
 .DS_Store
 Thumbs.db

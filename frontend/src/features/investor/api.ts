@@ -17,6 +17,8 @@ export interface OnboardingStatus {
   full_name: string;
   pan: string;
   proposed_investment_inr: number;
+  kyc_source: string | null;
+  risk_category: string | null;
 }
 
 export interface PortfolioSummary {

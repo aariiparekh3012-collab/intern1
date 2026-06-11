@@ -6,6 +6,7 @@
 """
 from __future__ import annotations
 
+import base64
 import datetime as dt
 import hashlib
 import secrets
@@ -23,16 +24,17 @@ _fernet = Fernet(settings.pii_encryption_key.encode())
 
 # ── passwords ──────────────────────────────────────────────────────────────
 
+def _prehash(raw: str) -> str:
+    """SHA-256 pre-hash normalises any-length password to 44 chars (< 72 byte bcrypt limit)."""
+    return base64.b64encode(hashlib.sha256(raw.encode("utf-8")).digest()).decode("ascii")
+
+
 def hash_password(raw: str) -> str:
-    if len(raw.encode("utf-8")) > 72:
-        raw = raw[:72]
-    return _pwd.hash(raw)
+    return _pwd.hash(_prehash(raw))
 
 
 def verify_password(raw: str, hashed: str) -> bool:
-    if len(raw.encode("utf-8")) > 72:
-        raw = raw[:72]
-    return _pwd.verify(raw, hashed)
+    return _pwd.verify(_prehash(raw), hashed)
 
 
 # ── JWT access tokens ──────────────────────────────────────────────────────

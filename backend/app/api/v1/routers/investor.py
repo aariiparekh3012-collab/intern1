@@ -17,6 +17,7 @@ from sqlalchemy.orm import Session
 from app.api import dependencies as deps
 from app.core.database import get_db
 from app.core.exceptions import DomainError
+from app.core.security import decrypt_pii
 from app.infrastructure.db.models_client import ClientModel
 from app.infrastructure.db.models_portfolio import (
     CashLedgerModel,
@@ -80,6 +81,8 @@ class OnboardingStatus(BaseModel):
     full_name: str
     pan: str
     proposed_investment_inr: float
+    kyc_source: Optional[str] = None
+    risk_category: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -131,8 +134,10 @@ def investor_dashboard(
                 id=app.id,
                 status=app.status,
                 full_name=app.full_name,
-                pan=app.pan,
-                proposed_investment_inr=float(app.proposed_investment_inr),
+                pan=decrypt_pii(app.pan_enc),
+                proposed_investment_inr=float(app.proposed_investment_paise) / 100,
+                kyc_source=app.kyc_source,
+                risk_category=app.risk_category,
             )
         return InvestorDashboard(onboarding=onboarding)
 
@@ -141,7 +146,7 @@ def investor_dashboard(
         client_id=client.id,
         full_name=client.full_name,
         client_code=client.client_code,
-        pan=client.pan,
+        pan=decrypt_pii(client.pan_enc),
         email=client.email,
         status=client.status,
         risk_category=client.risk_category,
