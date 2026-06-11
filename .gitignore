@@ -33,8 +33,4 @@ frontend/.vite/
 .DS_Store
 Thumbs.db
 
-# Docker
-pgdata/
-
-# Logs
-*.log
+#

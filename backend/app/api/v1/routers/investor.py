@@ -234,12 +234,4 @@ def investor_cash(
 
     acct = db.get(PortfolioAccountModel, account_id)
     if not acct or acct.client_id != client.id:
-        raise DomainError("Portfolio account not found or access denied", code="forbidden")
-
-    entries = db.scalars(
-        select(CashLedgerModel)
-        .where(CashLedgerModel.portfolio_account_id == account_id)
-        .order_by(CashLedgerModel.posted_on.desc())
-        .limit(100)
-    ).all()
-    return entries
+        raise DomainError("Portfolio account not found or access den

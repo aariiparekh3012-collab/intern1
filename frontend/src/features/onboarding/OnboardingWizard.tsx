@@ -7,7 +7,7 @@ import { KycStep } from "./steps/KycStep";
 import { RiskProfileStep } from "./steps/RiskProfileStep";
 import { AgreementStep } from "./steps/AgreementStep";
 
-const STEPS = ["Personal", "KYC & Bank", "Risk Profile", "Agreement"];
+const STEPS = ["Personal Details", "KYC & Bank", "Risk Profile", "Agreement"];
 
 /** Multi-step onboarding wizard with a premium stepper and shared state. */
 export function OnboardingWizard() {
@@ -24,7 +24,7 @@ export function OnboardingWizard() {
     <div style={{ maxWidth: 640, margin: "0 auto" }}>
       <div style={{ marginBottom: 8 }}>
         <h1>Client Onboarding</h1>
-        <p className="muted">Open a discretionary PMS account · minimum ₹50,00,000</p>
+        <p className="muted">Discretionary Portfolio Management Services · SEBI Regulated · Minimum ₹50,00,000</p>
       </div>
 
       {!done && <Stepper steps={STEPS} current={step} />}
@@ -33,7 +33,7 @@ export function OnboardingWizard() {
         {done && application ? (
           <div className="center fade-in" style={{ padding: "16px 0" }}>
             <div className="success-check">✓</div>
-            <h2>Submitted for review</h2>
+            <h2>Submitted for Review</h2>
             <p className="muted">
               Application <span className="mono">{application.id.slice(0, 8)}</span> is now{" "}
               <strong className="gold">{application.status.replace(/_/g, " ")}</strong>.

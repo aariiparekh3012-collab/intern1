@@ -47,7 +47,7 @@ export function InvestorPortal() {
     );
   }
 
-  // Not yet an active client — investor self-service view (KYC / Risk / Documents / Agreement)
+  // Not yet an active client
   if (!dash?.profile) {
     const ob = dash?.onboarding ?? null;
     const ORDER = [
@@ -104,7 +104,6 @@ export function InvestorPortal() {
             </Card>
 
             <div className="grid" style={{ gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-              {/* My KYC */}
               <Card>
                 <h3 className="card__title">My KYC</h3>
                 <div className="row row--between" style={{ marginBottom: 8 }}>
@@ -120,7 +119,6 @@ export function InvestorPortal() {
                 </div>
               </Card>
 
-              {/* My Risk Profile */}
               <Card>
                 <h3 className="card__title">My Risk Profile</h3>
                 <div className="row row--between" style={{ marginBottom: 8 }}>
@@ -139,7 +137,6 @@ export function InvestorPortal() {
                 </div>
               </Card>
 
-              {/* My Documents */}
               <Card>
                 <h3 className="card__title">My Documents</h3>
                 <div style={{ display: "grid", gap: 8 }}>
@@ -152,7 +149,6 @@ export function InvestorPortal() {
                 </div>
               </Card>
 
-              {/* Agreement Status */}
               <Card>
                 <h3 className="card__title">Agreement Status</h3>
                 <div className="row row--between" style={{ marginBottom: 8 }}>
@@ -183,7 +179,6 @@ export function InvestorPortal() {
   // Active client — full portal
   const { profile, portfolios, total_invested_paise } = dash;
 
-  // Sector allocation from holdings
   const sectorMap = new Map<string, number>();
   holdings.forEach((h) => {
     const sector = h.sector || "Other";
@@ -192,7 +187,6 @@ export function InvestorPortal() {
   const sectorData = Array.from(sectorMap.entries())
     .sort((a, b) => b[1] - a[1])
     .map(([label, value], i) => ({ label, value: Math.round(value / 100), color: palette(i) }));
-
 
   const totalHoldingsValue = holdings.reduce((s, h) => s + h.cost_value_paise, 0);
   const selectedPortfolio = portfolios.find((p: PortfolioSummary) => p.account_id === selectedAccount);
@@ -224,7 +218,6 @@ export function InvestorPortal() {
         </div>
       </div>
 
-      {/* Portfolio cards */}
       <div className="grid" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 16, marginBottom: 24 }}>
         {portfolios.map((p: PortfolioSummary) => (
           <Card
@@ -259,7 +252,6 @@ export function InvestorPortal() {
         </Card>
       )}
 
-      {/* Detail view for selected account */}
       {selectedAccount && (
         <>
           <Card style={{ marginBottom: 24 }}>
@@ -282,7 +274,6 @@ export function InvestorPortal() {
               )}
             </div>
 
-            {/* ─── Holdings Tab ─── */}
             {tab === "holdings" && (
               <>
                 {loadingHoldings ? (
@@ -330,7 +321,6 @@ export function InvestorPortal() {
               </>
             )}
 
-            {/* ─── Performance Tab ─── */}
             {tab === "performance" && (
               <div>
                 {holdings.length === 0 ? (
@@ -383,7 +373,6 @@ export function InvestorPortal() {
               </div>
             )}
 
-            {/* ─── Cash Ledger Tab ─── */}
             {tab === "cash" && (
               <>
                 {loadingCash ? (
@@ -392,7 +381,6 @@ export function InvestorPortal() {
                   <div className="empty">No cash entries yet.</div>
                 ) : (
                   <>
-                    {/* Cash balance summary */}
                     {cash.length > 0 && (
                       <div className="row" style={{ gap: 24, marginBottom: 16, padding: "12px 16px", background: "rgba(255,255,255,.02)", borderRadius: 8 }}>
                         <div>

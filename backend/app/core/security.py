@@ -75,11 +75,4 @@ def generate_verification_token() -> str:
     return secrets.token_urlsafe(48)
 
 
-# ── PII field encryption ──────────────────────────────────────────────────
-
-def encrypt_pii(plaintext: str) -> str:
-    return _fernet.encrypt(plaintext.encode()).decode()
-
-
-def decrypt_pii(ciphertext: str) -> str:
-    return _fernet.decrypt(ciphertext.encode()).decode()
+# ── PII field encryption ───────────────────────────────�
