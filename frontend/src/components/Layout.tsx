@@ -28,6 +28,7 @@ export function Layout() {
   const navigate = useNavigate();
   const user = auth.getUser();
   const role = user?.role ?? "";
+  const displayName = user?.full_name ?? user?.subject ?? "User";
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const { data: unreadData } = useQuery({
@@ -48,7 +49,6 @@ export function Layout() {
 
   return (
     <div className="shell">
-      {/* Mobile overlay */}
       {mobileOpen && (
         <div className="mobile-overlay" onClick={() => setMobileOpen(false)} />
       )}
@@ -78,9 +78,16 @@ export function Layout() {
             </NavLink>
           ))}
         </nav>
+
+        <div className="sidebar__footer">
+          <div style={{ fontSize: ".72rem", color: "var(--text-tertiary)", lineHeight: 1.5 }}>
+            SEBI Registered PMS<br />
+            INP000XXXXXX
+          </div>
+        </div>
       </aside>
 
-      <div>
+      <div className="main-column">
         <header className="topbar">
           <div className="row">
             <button
@@ -104,9 +111,9 @@ export function Layout() {
               {unread > 0 && <span className="topbar-badge">{unread}</span>}
             </button>
             <div style={{ textAlign: "right" }}>
-              <div style={{ fontSize: ".88rem" }}>{user?.subject ?? "guest"}</div>
+              <div style={{ fontSize: ".88rem", fontWeight: 500 }}>{displayName}</div>
               <div className="faint" style={{ fontSize: ".72rem", textTransform: "capitalize" }}>
-                {user?.role ?? ""}
+                {role === "rm" ? "Relationship Manager" : role === "compliance" ? "Compliance Officer" : role || ""}
               </div>
             </div>
             <div
@@ -115,14 +122,20 @@ export function Layout() {
               onClick={() => navigate("/settings")}
               title="Settings"
             >
-              {(user?.subject ?? "U")[0].toUpperCase()}
+              {displayName[0].toUpperCase()}
             </div>
             <button className="btn btn--ghost btn--sm" onClick={logout}>Logout</button>
           </div>
         </header>
+
         <main className="content fade-in">
           <Outlet />
         </main>
+
+        <footer className="app-footer">
+          <span>Aurum PMS · SEBI (Portfolio Managers) Regulations, 2020</span>
+          <span>Discretionary Portfolio Management · All rights reserved</span>
+        </footer>
       </div>
     </div>
   );

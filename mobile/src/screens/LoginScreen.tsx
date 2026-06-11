@@ -8,36 +8,40 @@ import {
   View,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { Button, Card, Field, SelectField, Toast } from "../components/ui";
+import { Button, Card, Field, Toast } from "../components/ui";
 import { apiClient } from "../lib/apiClient";
-import { auth, ROLE_PASSWORDS } from "../lib/auth";
+import { auth } from "../lib/auth";
 import { colors, font, radius, spacing, shadow } from "../lib/theme";
 
-const ROLES = [
-  { label: "Compliance", value: "compliance" },
-  { label: "RM", value: "rm" },
-  { label: "Investor", value: "investor" },
-];
-
 export function LoginScreen({ onLogin }: { onLogin: () => void }) {
-  const [subject, setSubject] = useState("aarya");
-  const [role, setRole] = useState("compliance");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const signIn = async () => {
-    if (password !== ROLE_PASSWORDS[role]) {
-      setError("Invalid password");
+    if (!email.trim() || !password) {
+      setError("Email and password are required");
       return;
     }
     setLoading(true);
     setError(null);
     try {
-      const { data } = await apiClient.post("/auth/dev-token", { subject, role });
-      await auth.setSession(data.access_token, { subject, role });
+      // Real backend auth: credentials are verified server-side.
+      const { data } = await apiClient.post("/auth/login", {
+        email: email.trim(),
+        password,
+      });
+      await auth.setSession(data.access_token, { subject: email.trim(), role: "" });
+      // Fetch profile to get the server-assigned role.
+      const me = await apiClient.get("/auth/me");
+      await auth.setSession(data.access_token, {
+        subject: me.data.full_name || me.data.email,
+        role: me.data.role,
+      });
       onLogin();
     } catch (e) {
+      await auth.clear();
       setError((e as Error).message);
     } finally {
       setLoading(false);
@@ -75,17 +79,12 @@ export function LoginScreen({ onLogin }: { onLogin: () => void }) {
           <Card glass>
             <Text style={styles.formTitle}>Sign in</Text>
             <Field
-              label="Name"
-              value={subject}
-              onChangeText={setSubject}
-              placeholder="your.name"
+              label="Email"
+              value={email}
+              onChangeText={setEmail}
+              placeholder="you@example.com"
               autoCapitalize="none"
-            />
-            <SelectField
-              label="Role"
-              options={ROLES}
-              value={role}
-              onValueChange={setRole}
+              keyboardType="email-address"
             />
             <Field
               label="Password"
@@ -100,7 +99,7 @@ export function LoginScreen({ onLogin }: { onLogin: () => void }) {
               </Button>
             </View>
             <Text style={styles.footerNote}>
-              SEBI-registered · Development sign-in
+              SEBI-registered · Secure sign-in
             </Text>
           </Card>
         </ScrollView>

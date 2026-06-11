@@ -3,55 +3,57 @@
    Apple-inspired: Light theme, soft shadows, abundant whitespace,
    monochromatic + blue accent, elegant micro-interactions.
    ============================================================ */
-@import url("https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
 
 :root {
-  /* Neutrals — Monochromatic palette */
-  --bg: #ffffff;
-  --bg-secondary: #f8f9fa;
-  --bg-tertiary: #f0f1f3;
+  /* Neutrals — institutional cool-grey canvas, white surfaces */
+  --bg: #f6f8fb;
+  --bg-secondary: #f1f5f9;
+  --bg-tertiary: #e8eef5;
   --surface: #ffffff;
-  --surface-hover: #f8f9fa;
+  --surface-hover: #f8fafc;
 
-  /* Accents — Single blue accent (Apple system blue) */
-  --accent: #007aff;
-  --accent-light: #e8f4ff;
-  --accent-dark: #0051d5;
+  /* Accent — confident corporate blue */
+  --accent: #2563eb;
+  --accent-light: #eef4ff;
+  --accent-dark: #1d4ed8;
 
-  /* Text & Semantic */
-  --text: #1a1a1c;
-  --text-secondary: #666666;
-  --text-tertiary: #99999b;
+  /* Text — slate scale for a serious, readable hierarchy */
+  --text: #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary: #94a3b8;
 
-  --success: #34c759;
-  --warning: #ff9500;
-  --danger: #ff3b30;
-  --info: #007aff;
+  --success: #16a34a;
+  --warning: #d97706;
+  --danger: #dc2626;
+  --info: #2563eb;
 
   /* Borders & Dividers */
-  --border: #e5e5e7;
-  --border-light: #f0f0f2;
+  --border: #e2e8f0;
+  --border-light: #eef2f7;
+  --line: #e2e8f0;
 
-  /* Shadows — Soft and refined */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.12);
-  --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.15);
+  /* Shadows — subtle, cool, layered (finance-grade restraint) */
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 10px 24px -8px rgba(15, 23, 42, 0.14);
+  --shadow-xl: 0 24px 48px -16px rgba(15, 23, 42, 0.20);
 
-  /* Radius — Refined and consistent */
-  --radius: 12px;
-  --radius-sm: 8px;
-  --radius-lg: 16px;
+  /* Radius — tighter, more corporate */
+  --radius: 10px;
+  --radius-sm: 7px;
+  --radius-lg: 14px;
 
   /* Aliases for backward compatibility */
-  --color-success: #34c759;
-  --color-danger: #ff3b30;
-  --color-warning: #ff9500;
-  --color-info: #007aff;
-  --color-muted: #666666;
-  --glass: rgba(0, 0, 0, 0.02);
-  --gold: #007aff;
-  --gold-2: #007aff;
+  --color-success: #16a34a;
+  --color-danger: #dc2626;
+  --color-warning: #d97706;
+  --color-info: #2563eb;
+  --color-muted: #475569;
+  --color-gold: #2563eb;
+  --glass: rgba(15, 23, 42, 0.02);
+  --gold: #2563eb;
+  --gold-2: #1d4ed8;
 }
 
 * { box-sizing: border-box; }
@@ -60,7 +62,9 @@ html, body, #root { height: 100%; }
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  font-feature-settings: "cv11", "ss01";
+  letter-spacing: -0.005em;
   color: var(--text);
   background: var(--bg);
   -webkit-font-smoothing: antialiased;
@@ -549,6 +553,13 @@ nav {
   margin-left: auto;
 }
 
+.main-column {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
 .content {
   padding: 32px;
   overflow-y: auto;
@@ -975,3 +986,143 @@ nav {
     color: #000;
   }
 }
+
+/* ── Footer ─────────────────────────────────── */
+.app-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px;
+  font-size: .7rem;
+  color: var(--text-tertiary, #888);
+  border-top: 1px solid var(--border, #2a2a2e);
+  flex-shrink: 0;
+}
+@media (max-width: 768px) {
+  .app-footer {
+    flex-direction: column;
+    gap: 4px;
+    text-align: center;
+    padding: 10px 16px;
+  }
+}
+
+/* ── Sidebar footer ─────────────────────────── */
+.sidebar__footer {
+  margin-top: auto;
+  padding: 16px 20px;
+  border-top: 1px solid var(--border, #2a2a2e);
+}
+
+/* ============================================================
+   Corporate polish overrides — institutional finance finish
+   (appended last so these win the cascade; tokens already updated)
+   ============================================================ */
+
+/* Sidebar: white, elevated, clear separation */
+.sidebar {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+}
+.brand__name { font-weight: 700; letter-spacing: -0.02em; color: var(--text); }
+.brand__sub { letter-spacing: 0.14em; color: var(--text-tertiary); }
+
+/* Nav: refined active state with an accent indicator bar */
+.nav-item { font-weight: 500; }
+.nav-item--active {
+  background: var(--accent-light);
+  color: var(--accent-dark);
+  font-weight: 600;
+  position: relative;
+}
+.nav-item--active::before {
+  content: "";
+  position: absolute;
+  left: -6px; top: 7px; bottom: 7px;
+  width: 3px; border-radius: 0 2px 2px 0;
+  background: var(--accent);
+}
+
+/* Topbar: crisp glass header */
+.topbar {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: saturate(180%) blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+
+/* Cards: restrained, no jumpy lift — just a refined shadow on hover */
+.card { border: 1px solid var(--border); }
+.card:hover { box-shadow: var(--shadow-lg); transform: none; }
+
+/* Numbers everywhere: tabular alignment (finance hygiene) */
+.kpi__value, .mono, .table td { font-variant-numeric: tabular-nums; }
+.kpi__value { font-weight: 700; letter-spacing: -0.02em; color: var(--text); }
+.kpi__label { color: var(--text-secondary); }
+
+/* Tables: airier, quiet header, subtle row hover */
+.table th {
+  color: var(--text-tertiary);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  background: var(--bg-secondary);
+}
+.table tbody tr:hover { background: var(--surface-hover); }
+
+/* Typography: tighter display headings */
+h1 { letter-spacing: -0.025em; }
+
+/* Buttons: confident weight + tuned accent shadow */
+.btn { font-weight: 600; }
+.btn--primary { box-shadow: 0 1px 2px rgba(37, 99, 235, 0.25); }
+.btn--primary:hover { box-shadow: 0 6px 16px -2px rgba(37, 99, 235, 0.35); }
+
+/* Badges: crisper */
+.badge { font-weight: 600; }
+
+/* Auth screen: premium, branded backdrop */
+.auth-wrap {
+  background:
+    radial-gradient(1100px 520px at 50% -12%, var(--accent-light), transparent 62%),
+    var(--bg);
+}
+.auth-card { box-shadow: var(--shadow-xl); }
+
+/* KPI tiles: defined, card-like, consistent across every dashboard */
+.kpi {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+}
+.kpi__value { font-size: 1.9rem; line-height: 1.1; }
+
+/* Card titles: quiet, uppercase eyebrow style for a corporate feel */
+.card__title {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+}
+
+/* Quick-action tiles on the dashboard: clear affordance + lift on hover */
+.quick-action {
+  border: 1px solid var(--border);
+  transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.quick-action:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--accent);
+}
+
+/* Page rhythm: a touch more breathing room under page titles */
+.content > .fade-in > h1:first-child,
+.content h1 { margin-bottom: 6px; }
+.content { padding: 28px 32px; }
+
+/* Empty states: centered, friendly, never look broken */
+.empty { font-size: 0.92rem; }
+
+/* Links/buttons inside tables shouldn't inherit row hover oddly */
+.table .btn { white-space: nowrap; }

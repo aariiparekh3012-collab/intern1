@@ -10,12 +10,6 @@ export interface AuthUser {
 
 export type Role = "compliance" | "rm" | "investor";
 
-export const ROLE_PASSWORDS: Record<string, string> = {
-  compliance: "compliance123",
-  rm: "rm123",
-  investor: "investor123",
-};
-
 /** Tabs each role can see (mirrors web ROLE_ROUTES). */
 export const ROLE_TABS: Record<string, string[]> = {
   compliance: [

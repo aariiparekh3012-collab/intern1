@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "node:path";
@@ -8,5 +9,9 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: { "/api": "http://localhost:8000" },
+  },
+  test: {
+    environment: "jsdom",
+    include: ["src/**/*.test.{ts,tsx}"],
   },
 });

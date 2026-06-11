@@ -386,4 +386,5 @@ def revoke_session(
 def dev_token(body: DevTokenRequest) -> DevTokenResponse:
     """Issue a dev token (disabled in production)."""
     if get_settings().is_production:
-        raise DomainError("Dev token endpoint is disabled in production", code="forb
+        raise DomainError("Dev token endpoint is disabled in production", code="forbidden")
+    return DevTokenResponse(access_token=create_access_token(body.subject, body.role))
